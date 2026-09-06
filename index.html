@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clinical Data Quality Dashboard | Jiashuo Su</title>
+  <style>
+    :root {
+      --ink: #13212e;
+      --muted: #5d6b78;
+      --line: #d9e1e8;
+      --paper: #ffffff;
+      --soft: #f4f7fa;
+      --blue: #075985;
+      --teal: #0f766e;
+      --green: #227a4f;
+      --amber: #a15c07;
+      --red: #b42318;
+      --shadow: 0 18px 44px rgba(19, 33, 46, .11);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #edf3f6;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    button, select, input { font: inherit; }
+    header {
+      padding: 22px 5vw 18px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+    h1 { margin: 0; font-size: clamp(24px, 3vw, 34px); letter-spacing: 0; line-height: 1.15; }
+    header p { margin: 10px 0 0; max-width: 1040px; color: var(--muted); font-size: 16px; }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 390px) minmax(560px, 1fr);
+      gap: 18px;
+      padding: 18px 5vw 34px;
+      align-items: start;
+    }
+    .panel, .case {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    .case { padding: 18px; }
+    h2 { margin: 0 0 10px; font-size: 20px; letter-spacing: 0; }
+    h3 { margin: 18px 0 8px; font-size: 15px; letter-spacing: 0; }
+    p, li { font-size: 14px; }
+    .case p, .case li { color: #334252; }
+    .case ul { margin: 8px 0 0 18px; padding: 0; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .pill {
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #263646;
+      font-size: 12px;
+    }
+    .flow { display: grid; gap: 8px; margin-top: 10px; }
+    .flow-step { display: grid; grid-template-columns: 28px 1fr; gap: 10px; font-size: 13px; }
+    .num {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: white;
+      background: var(--blue);
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .dashboard { overflow: hidden; }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 13px 16px;
+      background: #102b3f;
+      color: #fff;
+    }
+    .topbar strong { font-size: 16px; }
+    .topbar span { color: #c8d7e3; font-size: 13px; }
+    .workspace { padding: 16px; }
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    select, input {
+      width: 100%;
+      border: 1px solid #b8c5d0;
+      border-radius: 6px;
+      padding: 9px;
+      background: white;
+      font-size: 14px;
+    }
+    button {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 11px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    button.primary { background: var(--blue); color: white; border-color: var(--blue); }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid rgba(15, 116, 157, .25); outline-offset: 2px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--soft);
+    }
+    .stat strong { display: block; font-size: 24px; }
+    .stat span { color: var(--muted); font-size: 12px; }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(340px, 1.15fr) minmax(280px, .85fr);
+      gap: 12px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 14px;
+      min-width: 0;
+    }
+    .card h3 { margin-top: 0; }
+    svg { width: 100%; height: auto; display: block; }
+    .axis { stroke: #c8d3dc; stroke-width: 1; }
+    .line { fill: none; stroke: var(--blue); stroke-width: 3; }
+    .line.alt { stroke: var(--teal); }
+    .dot { fill: var(--blue); }
+    .dot.flag { fill: var(--red); }
+    .bar { fill: #dcecf5; }
+    .bar.high { fill: #ffe0dd; }
+    .bar.medium { fill: #fff0cf; }
+    .bar.good { fill: #dff3e8; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; background: var(--blue); }
+    .legend span:nth-child(2)::before { background: var(--red); }
+    .legend span:nth-child(3)::before { background: var(--teal); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 13px;
+    }
+    th, td { text-align: left; padding: 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: var(--soft); color: #344253; font-size: 12px; }
+    .badge { display: inline-flex; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .badge.high { color: var(--red); background: #fff1f0; }
+    .badge.medium { color: var(--amber); background: #fff7e8; }
+    .badge.good { color: var(--green); background: #eef8f2; }
+    .insights { margin-top: 12px; }
+    .insights ul { margin: 8px 0 0 18px; padding: 0; }
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: min(360px, calc(100vw - 40px));
+      background: #102b3f;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(18px);
+      transition: .2s ease;
+      pointer-events: none;
+      font-size: 14px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    footer { padding: 0 5vw 26px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 980px) {
+      .layout, .grid { grid-template-columns: 1fr; }
+      .filters, .stats { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 620px) {
+      header, .layout { padding-left: 14px; padding-right: 14px; }
+      .filters, .stats { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Clinical Data Quality Dashboard</h1>
+    <p>A self-directed data science portfolio project by Jiashuo Su using synthetic patient-monitoring data. The dashboard demonstrates cleaning logic, quality checks, visual analysis, risk flagging, and stakeholder-facing insights.</p>
+  </header>
+  <main class="layout">
+    <section class="case" aria-labelledby="case-title">
+      <h2 id="case-title">Case study</h2>
+      <div class="pill-row">
+        <span class="pill">Python-style pipeline</span>
+        <span class="pill">Data quality</span>
+        <span class="pill">Clinical monitoring</span>
+        <span class="pill">Dashboard</span>
+        <span class="pill">Synthetic data</span>
+      </div>
+      <h3>Problem</h3>
+      <p>Clinical sensor data can contain missing values, sudden spikes, duplicate timestamps, or signal drift. Before results are used for insight generation, analysts need a repeatable way to check whether the data is complete, consistent, and clinically interpretable.</p>
+      <h3>Approach</h3>
+      <div class="flow">
+        <div class="flow-step"><span class="num">1</span><span>Load synthetic patient-monitoring records with pressure, signal quality, battery level, and review status.</span></div>
+        <div class="flow-step"><span class="num">2</span><span>Apply validation checks for missing readings, outliers, low signal quality, duplicate timestamps, and review flags.</span></div>
+        <div class="flow-step"><span class="num">3</span><span>Visualise trends and quality issues so technical and non-technical stakeholders can understand the result.</span></div>
+        <div class="flow-step"><span class="num">4</span><span>Produce recommendations for follow-up review, pipeline improvement, and clinical data quality monitoring.</span></div>
+      </div>
+      <h3>What this shows</h3>
+      <ul>
+        <li>Ability to structure an analytical workflow around data quality, not just charts.</li>
+        <li>Practical dashboard communication for clinical, product, and engineering audiences.</li>
+        <li>Readiness to support pipeline optimisation, visualisation, and insight generation.</li>
+      </ul>
+      <h3>Honest positioning</h3>
+      <p>This is not real patient data and not commercial work. The dataset is synthetic and used only to demonstrate clinical data science thinking for an internship application.</p>
+    </section>
+    <section class="panel dashboard" aria-labelledby="dashboard-title">
+      <div class="topbar"><strong id="dashboard-title">Patient Monitoring Data Quality Review</strong><span>Interactive synthetic-data demo</span></div>
+      <div class="workspace">
+        <div class="filters">
+          <div><label for="patientFilter">Patient</label><select id="patientFilter"><option value="All">All patients</option></select></div>
+          <div><label for="riskFilter">Risk level</label><select id="riskFilter"><option value="All">All risk levels</option><option value="High">High</option><option value="Medium">Medium</option><option value="Good">Good</option></select></div>
+          <div><label for="searchBox">Search note</label><input id="searchBox" type="search" placeholder="missing, spike, drift"></div>
+          <button id="exportCsv" class="primary" type="button">Export CSV</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><strong id="recordCount">0</strong><span>Records reviewed</span></div>
+          <div class="stat"><strong id="qualityScore">0%</strong><span>Quality score</span></div>
+          <div class="stat"><strong id="flagCount">0</strong><span>Flagged records</span></div>
+          <div class="stat"><strong id="missingCount">0</strong><span>Missing readings</span></div>
+        </div>
+        <div class="grid">
+          <div class="card">
+            <h3>Pressure trend and flagged readings</h3>
+            <svg id="lineChart" viewBox="0 0 720 300" role="img" aria-label="Pressure trend chart"></svg>
+            <div class="legend"><span>Pressure reading</span><span>Flagged point</span><span>Moving average</span></div>
+          </div>
+          <div class="card">
+            <h3>Quality issue mix</h3>
+            <svg id="barChart" viewBox="0 0 360 300" role="img" aria-label="Quality issue mix chart"></svg>
+          </div>
+        </div>
+        <div class="card insights">
+          <h3>Stakeholder insights</h3>
+          <ul id="insightList"></ul>
+        </div>
+        <div class="card insights">
+          <h3>Reviewed records</h3>
+          <table aria-label="Clinical data quality records">
+            <thead><tr><th>Patient</th><th>Day</th><th>Pressure</th><th>Signal</th><th>Risk</th><th>Quality note</th></tr></thead>
+            <tbody id="recordRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>Self-directed portfolio project using synthetic data. It is not clinical advice, not real patient data, and not work completed for any company.</footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const data = [
+      ["P-001",1,13.2,96,"Good","Stable baseline"],["P-001",2,13.4,95,"Good","Stable baseline"],["P-001",3,14.1,93,"Good","Small increase"],["P-001",4,null,90,"Medium","Missing pressure reading"],["P-001",5,18.9,82,"High","Sudden pressure spike"],["P-001",6,16.1,88,"Medium","Requires follow-up check"],
+      ["P-002",1,10.8,97,"Good","Clean reading"],["P-002",2,11.1,96,"Good","Clean reading"],["P-002",3,11.0,62,"Medium","Low signal quality"],["P-002",4,11.4,95,"Good","Recovered signal"],["P-002",5,11.5,94,"Good","Stable trend"],["P-002",6,11.7,92,"Good","Stable trend"],
+      ["P-003",1,15.2,91,"Good","Acceptable reading"],["P-003",2,15.6,89,"Medium","Signal below target"],["P-003",3,16.2,87,"Medium","Gradual drift"],["P-003",4,17.1,85,"Medium","Gradual drift"],["P-003",5,20.4,78,"High","Pressure spike and low signal"],["P-003",6,18.2,84,"High","Needs clinical review flag"],
+      ["P-004",1,12.4,98,"Good","Clean reading"],["P-004",2,12.5,98,"Good","Clean reading"],["P-004",3,12.4,98,"Good","Duplicate-like repeated pattern"],["P-004",4,12.6,97,"Good","Clean reading"],["P-004",5,null,96,"Medium","Missing pressure reading"],["P-004",6,12.7,96,"Good","Clean reading"]
+    ].map(([patient, day, pressure, signal, risk, note]) => ({ patient, day, pressure, signal, risk, note }));
+
+    const $ = id => document.getElementById(id);
+    const patientFilter = $("patientFilter"), riskFilter = $("riskFilter"), searchBox = $("searchBox");
+    [...new Set(data.map(d => d.patient))].forEach(p => patientFilter.insertAdjacentHTML("beforeend", `<option value="${p}">${p}</option>`));
+    const riskClass = risk => risk.toLowerCase();
+    function filtered() {
+      const patient = patientFilter.value, risk = riskFilter.value, q = searchBox.value.trim().toLowerCase();
+      return data.filter(d => (patient === "All" || d.patient === patient) && (risk === "All" || d.risk === risk) && (!q || d.note.toLowerCase().includes(q)));
+    }
+    function movingAverage(records, i) {
+      const window = records.slice(Math.max(0, i - 1), i + 2).map(d => d.pressure).filter(v => v !== null);
+      return window.length ? window.reduce((a,b) => a + b, 0) / window.length : null;
+    }
+    function renderStats(records) {
+      const flags = records.filter(d => d.risk !== "Good").length;
+      const missing = records.filter(d => d.pressure === null).length;
+      $("recordCount").textContent = records.length;
+      $("flagCount").textContent = flags;
+      $("missingCount").textContent = missing;
+      $("qualityScore").textContent = records.length ? `${Math.round(((records.length - flags) / records.length) * 100)}%` : "0%";
+    }
+    function renderLine(records) {
+      const svg = $("lineChart"), w = 720, h = 300, pad = 42;
+      const readings = records.filter(d => d.pressure !== null);
+      if (!readings.length) { svg.innerHTML = `<text x="30" y="150" fill="#5d6b78">No pressure readings match the current filters.</text>`; return; }
+      const min = Math.min(...readings.map(d => d.pressure)) - 1, max = Math.max(...readings.map(d => d.pressure)) + 1;
+      const x = i => pad + i * ((w - pad * 2) / Math.max(records.length - 1, 1));
+      const y = v => h - pad - ((v - min) / (max - min)) * (h - pad * 2);
+      const line = records.map((d, i) => d.pressure === null ? null : `${x(i)},${y(d.pressure)}`).filter(Boolean).join(" ");
+      const avg = records.map((d, i) => movingAverage(records, i)).map((v, i) => v === null ? null : `${x(i)},${y(v)}`).filter(Boolean).join(" ");
+      svg.innerHTML = `<line class="axis" x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}"></line><line class="axis" x1="${pad}" y1="${pad}" x2="${pad}" y2="${h-pad}"></line><polyline class="line" points="${line}"></polyline><polyline class="line alt" points="${avg}"></polyline>` + records.map((d, i) => d.pressure === null ? `<text x="${x(i)-8}" y="${h-pad+22}" fill="#b42318" font-size="18">x</text>` : `<circle class="dot ${d.risk === "High" ? "flag" : ""}" cx="${x(i)}" cy="${y(d.pressure)}" r="${d.risk === "High" ? 6 : 4}"><title>${d.patient} day ${d.day}: ${d.pressure} mmHg, ${d.note}</title></circle>`).join("") + `<text x="${pad}" y="24" fill="#5d6b78" font-size="12">Synthetic pressure readings by selected records</text>`;
+    }
+    function renderBars(records) {
+      const counts = { "Missing reading": 0, "Low signal": 0, "Spike": 0, "Drift/review": 0 };
+      records.forEach(d => { if (d.pressure === null) counts["Missing reading"]++; if (d.signal < 90) counts["Low signal"]++; if (d.pressure !== null && d.pressure >= 18.5) counts["Spike"]++; if (/drift|review|follow-up/i.test(d.note)) counts["Drift/review"]++; });
+      const max = Math.max(1, ...Object.values(counts)), rows = Object.entries(counts);
+      $("barChart").innerHTML = rows.map(([label, value], i) => {
+        const y = 38 + i * 60, width = 235 * (value / max);
+        return `<text x="20" y="${y}" fill="#334252" font-size="13">${label}</text><rect class="bar ${value >= 2 ? "high" : value === 1 ? "medium" : "good"}" x="20" y="${y+10}" width="${width}" height="24" rx="5"></rect><text x="${30 + width}" y="${y+28}" fill="#13212e" font-size="13" font-weight="700">${value}</text>`;
+      }).join("");
+    }
+    function renderRows(records) {
+      $("recordRows").innerHTML = records.map(d => `<tr><td>${d.patient}</td><td>${d.day}</td><td>${d.pressure ?? "Missing"}</td><td>${d.signal}%</td><td><span class="badge ${riskClass(d.risk)}">${d.risk}</span></td><td>${d.note}</td></tr>`).join("") || `<tr><td colspan="6">No records match the current filters.</td></tr>`;
+    }
+    function renderInsights(records) {
+      const high = records.filter(d => d.risk === "High");
+      const lowSignal = records.filter(d => d.signal < 90);
+      const missing = records.filter(d => d.pressure === null);
+      const insights = [
+        `${high.length} selected record(s) require priority review because they contain high-risk pressure or quality signals.`,
+        `${missing.length} selected record(s) have missing pressure values, so pipeline logic should preserve missingness instead of silently averaging it away.`,
+        `${lowSignal.length} selected record(s) have signal quality below 90%, which may reduce confidence in downstream model outputs.`,
+        "Recommended next step: review flagged records first, then compare dashboard trends with clinical context before using them for model-supported insights."
+      ];
+      $("insightList").innerHTML = insights.map(i => `<li>${i}</li>`).join("");
+    }
+    function render() { const records = filtered(); renderStats(records); renderLine(records); renderBars(records); renderRows(records); renderInsights(records); }
+    function showToast(message) { const t = $("toast"); t.textContent = message; t.classList.add("show"); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => t.classList.remove("show"), 2400); }
+    function exportCsv() {
+      const rows = [["Patient","Day","Pressure","Signal","Risk","Quality note"], ...filtered().map(d => [d.patient, d.day, d.pressure ?? "", d.signal, d.risk, d.note])];
+      const csv = rows.map(row => row.map(cell => `"${String(cell).replaceAll('"','""')}"`).join(",")).join("\n");
+      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+      const link = document.createElement("a"); link.href = url; link.download = "clinical-data-quality-demo.csv"; link.click(); URL.revokeObjectURL(url);
+      showToast("CSV export created from the current filtered records.");
+    }
+    patientFilter.addEventListener("change", render); riskFilter.addEventListener("change", render); searchBox.addEventListener("input", render); $("exportCsv").addEventListener("click", exportCsv);
+    render();
+  </script>
+</body>
+</html>
