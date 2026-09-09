@@ -1,25 +1,94 @@
-# Clinical Data Quality Dashboard
+# Healthcare Data Quality and Evaluation Dashboard
 
-This is a self-directed data science portfolio project by Jiashuo Su using synthetic patient-monitoring data.
+Portfolio project by Jiashuo Su for data analysis, modelling, research and
+evaluation internship applications.
 
-It is not real patient data, not clinical advice, and not work completed for any company.
-
-## Live Dashboard
-
+Live dashboard:
 https://suu-susu.github.io/clinical-data-quality-dashboard/
 
-## Purpose
+## Project Summary
 
-This project was created for a Clinical Data Science Intern application. It demonstrates how I would approach real-world clinical data analysis work: inspect data quality, identify missing or unreliable readings, visualise trends, flag records for review, and explain findings to technical and non-technical stakeholders.
+This project uses synthetic healthcare monitoring records to demonstrate how an
+analyst can move from raw observations to a defensible evaluation output. It is
+designed to show more than front-end dashboard work: it includes data-quality
+rules, an explainable scoring model, anomaly review, cohort comparison,
+stakeholder findings and exportable review records.
 
-## What It Demonstrates
+The dataset is synthetic. It is not real patient data, not clinical advice and
+not work completed for any company.
 
-- Data quality checks for missing readings, low signal quality, spikes, and drift/review patterns
-- Synthetic patient-monitoring data model with patient, day, pressure, signal quality, risk level, and notes
-- Interactive filters by patient, risk level, and quality note search
-- SVG-based trend and issue-mix visualisations
-- Stakeholder-facing insights and CSV export
+## Why This Is More Than A Dashboard
 
-## Why It Fits Clinical Data Science
+- **Data cleaning:** missing readings, duplicate-like records and signal-quality
+  issues are explicitly detected.
+- **Modelling logic:** every record receives an explainable quality score and
+  risk label.
+- **Evaluation thinking:** the dashboard asks whether the data is reliable
+  enough for reporting or modelling.
+- **Research communication:** findings are written as concise stakeholder
+  recommendations, not only charts.
+- **Export workflow:** reviewed records can be exported for further analysis.
 
-Clinical analytics is not only about producing charts. The analyst must understand whether the data is complete, reliable, and suitable for interpretation. This project shows that mindset through a compact dashboard and repeatable review workflow.
+## Internship Fit
+
+This project maps to data, analysis and modelling internship work:
+
+- analyse, evaluate and interpret research data;
+- handle ambiguity, missingness and changing data quality;
+- build simple models that translate raw data into insight;
+- create dashboard, report and infographic-style outputs;
+- explain findings clearly to technical and non-technical stakeholders;
+- show attention to detail through transparent validation rules.
+
+## Current Features
+
+- Filters by cohort, patient, risk level, minimum quality score and note text.
+- Quality score based on completeness, signal quality, duplicate patterns,
+  outliers, sharp increases and drift or review notes.
+- Trend chart with high-risk markers and moving average.
+- Issue-mix chart.
+- Cohort comparison chart.
+- Evaluation matrix.
+- Reviewed record table with risk, issues and recommended action.
+- Auto-generated recommendation report.
+- CSV export of filtered reviewed records.
+
+## Repository Structure
+
+```text
+.
+|-- index.html
+|-- README.md
+|-- data/
+|   `-- synthetic_healthcare_monitoring.csv
+|-- analysis/
+|   `-- quality_model.py
+|-- docs/
+|   `-- methodology.md
+`-- outputs/
+    |-- reviewed_records.csv
+    `-- evaluation_summary.csv
+```
+
+## Method
+
+The score starts at 100 and applies penalties for known data-quality and
+interpretation risks:
+
+- missing readings;
+- low signal quality;
+- duplicate-like patterns;
+- high outliers;
+- sharp increases;
+- drift or manual review notes.
+
+The result is intentionally explainable. In research and evaluation settings,
+simple transparent models are often easier to defend than complex black-box
+scores, especially when the task is to communicate quality concerns to clients.
+
+## Next Steps
+
+- Add a Python notebook for exploratory analysis.
+- Add formal tests for scoring rules.
+- Expand the synthetic dataset with more cohorts and intervention periods.
+- Add confidence intervals or simple forecasting for evaluation reporting.
