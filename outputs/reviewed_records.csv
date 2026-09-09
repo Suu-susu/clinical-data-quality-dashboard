@@ -1,0 +1,31 @@
+patient,cohort,date,reading,signal,complete,duplicate,reviewed,note,quality_score,risk,issues,recommended_action
+P-001,Remote monitoring,2026-01-05,13.2,96,True,False,False,Stable baseline,100,Good,Clean,Use for summary reporting
+P-001,Remote monitoring,2026-01-06,13.4,95,True,False,False,Stable baseline,100,Good,Clean,Use for summary reporting
+P-001,Remote monitoring,2026-01-07,14.1,93,True,False,False,Small increase,100,Good,Clean,Use for summary reporting
+P-001,Remote monitoring,2026-01-08,,90,False,False,True,Missing pressure reading,72,Medium,Missing reading,Verify source record before modelling
+P-001,Remote monitoring,2026-01-09,18.9,82,True,False,True,Sudden pressure spike,58,High,Low signal; High outlier; Sharp increase,Review clinical context and confirm anomaly
+P-001,Remote monitoring,2026-01-10,16.1,88,True,False,True,Follow-up check after spike,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
+P-002,Usability pilot,2026-01-05,10.8,97,True,False,False,Clean reading,100,Good,Clean,Use for summary reporting
+P-002,Usability pilot,2026-01-06,11.1,96,True,False,False,Clean reading,100,Good,Clean,Use for summary reporting
+P-002,Usability pilot,2026-01-07,11.0,62,True,False,True,Low signal quality,76,Medium,Low signal,Check device signal and exclude from sensitive analysis if unresolved
+P-002,Usability pilot,2026-01-08,11.4,95,True,False,False,Recovered signal,100,Good,Clean,Use for summary reporting
+P-002,Usability pilot,2026-01-09,11.5,94,True,False,False,Stable trend,100,Good,Clean,Use for summary reporting
+P-002,Usability pilot,2026-01-10,11.7,92,True,False,False,Stable trend,100,Good,Clean,Use for summary reporting
+P-003,Clinical evaluation,2026-01-05,15.2,91,True,False,False,Acceptable reading,100,Good,Clean,Use for summary reporting
+P-003,Clinical evaluation,2026-01-06,15.6,89,True,False,True,Signal below target,86,Good,Low signal,Check device signal and exclude from sensitive analysis if unresolved
+P-003,Clinical evaluation,2026-01-07,16.2,87,True,False,True,Gradual upward drift,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
+P-003,Clinical evaluation,2026-01-08,17.1,85,True,False,True,Gradual upward drift,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
+P-003,Clinical evaluation,2026-01-09,20.4,78,True,False,True,Pressure spike and low signal,58,High,Low signal; High outlier; Sharp increase,Review clinical context and confirm anomaly
+P-003,Clinical evaluation,2026-01-10,18.2,84,True,False,True,Needs review flag,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
+P-004,Remote monitoring,2026-01-05,12.4,98,True,False,False,Clean reading,100,Good,Clean,Use for summary reporting
+P-004,Remote monitoring,2026-01-06,12.5,98,True,False,False,Clean reading,100,Good,Clean,Use for summary reporting
+P-004,Remote monitoring,2026-01-07,12.4,98,True,True,True,Duplicate-like repeated pattern,84,Good,Duplicate pattern,Check timestamp and remove duplicate before reporting
+P-004,Remote monitoring,2026-01-08,12.6,97,True,False,False,Clean reading,100,Good,Clean,Use for summary reporting
+P-004,Remote monitoring,2026-01-09,,96,False,False,True,Missing pressure reading,72,Medium,Missing reading,Verify source record before modelling
+P-004,Remote monitoring,2026-01-10,12.7,96,True,False,False,Clean reading,100,Good,Clean,Use for summary reporting
+P-005,Workforce wellbeing,2026-01-05,14.8,90,True,False,False,Baseline,100,Good,Clean,Use for summary reporting
+P-005,Workforce wellbeing,2026-01-06,15.0,88,True,False,True,Signal below target,86,Good,Low signal,Check device signal and exclude from sensitive analysis if unresolved
+P-005,Workforce wellbeing,2026-01-07,15.9,86,True,False,True,Gradual drift,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
+P-005,Workforce wellbeing,2026-01-08,16.4,84,True,False,True,Gradual drift and review,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
+P-005,Workforce wellbeing,2026-01-09,16.8,83,True,False,True,Continued drift,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
+P-005,Workforce wellbeing,2026-01-10,17.0,82,True,False,True,Review trend,78,Medium,Low signal; Review trend,Check device signal and exclude from sensitive analysis if unresolved
