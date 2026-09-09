@@ -1,0 +1,5 @@
+cohort,records,average_quality_score,flagged_records,high_risk_records,missing_readings,low_signal_records
+Clinical evaluation,6,79.7,4,1,0,5
+Remote monitoring,12,88.7,4,1,2,2
+Usability pilot,6,96,1,0,0,1
+Workforce wellbeing,6,83,4,0,0,5
