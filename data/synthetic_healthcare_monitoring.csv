@@ -1,0 +1,31 @@
+patient,cohort,date,reading,signal,complete,duplicate,reviewed,note
+P-001,Remote monitoring,2026-01-05,13.2,96,true,false,false,Stable baseline
+P-001,Remote monitoring,2026-01-06,13.4,95,true,false,false,Stable baseline
+P-001,Remote monitoring,2026-01-07,14.1,93,true,false,false,Small increase
+P-001,Remote monitoring,2026-01-08,,90,false,false,true,Missing pressure reading
+P-001,Remote monitoring,2026-01-09,18.9,82,true,false,true,Sudden pressure spike
+P-001,Remote monitoring,2026-01-10,16.1,88,true,false,true,Follow-up check after spike
+P-002,Usability pilot,2026-01-05,10.8,97,true,false,false,Clean reading
+P-002,Usability pilot,2026-01-06,11.1,96,true,false,false,Clean reading
+P-002,Usability pilot,2026-01-07,11.0,62,true,false,true,Low signal quality
+P-002,Usability pilot,2026-01-08,11.4,95,true,false,false,Recovered signal
+P-002,Usability pilot,2026-01-09,11.5,94,true,false,false,Stable trend
+P-002,Usability pilot,2026-01-10,11.7,92,true,false,false,Stable trend
+P-003,Clinical evaluation,2026-01-05,15.2,91,true,false,false,Acceptable reading
+P-003,Clinical evaluation,2026-01-06,15.6,89,true,false,true,Signal below target
+P-003,Clinical evaluation,2026-01-07,16.2,87,true,false,true,Gradual upward drift
+P-003,Clinical evaluation,2026-01-08,17.1,85,true,false,true,Gradual upward drift
+P-003,Clinical evaluation,2026-01-09,20.4,78,true,false,true,Pressure spike and low signal
+P-003,Clinical evaluation,2026-01-10,18.2,84,true,false,true,Needs review flag
+P-004,Remote monitoring,2026-01-05,12.4,98,true,false,false,Clean reading
+P-004,Remote monitoring,2026-01-06,12.5,98,true,false,false,Clean reading
+P-004,Remote monitoring,2026-01-07,12.4,98,true,true,true,Duplicate-like repeated pattern
+P-004,Remote monitoring,2026-01-08,12.6,97,true,false,false,Clean reading
+P-004,Remote monitoring,2026-01-09,,96,false,false,true,Missing pressure reading
+P-004,Remote monitoring,2026-01-10,12.7,96,true,false,false,Clean reading
+P-005,Workforce wellbeing,2026-01-05,14.8,90,true,false,false,Baseline
+P-005,Workforce wellbeing,2026-01-06,15.0,88,true,false,true,Signal below target
+P-005,Workforce wellbeing,2026-01-07,15.9,86,true,false,true,Gradual drift
+P-005,Workforce wellbeing,2026-01-08,16.4,84,true,false,true,Gradual drift and review
+P-005,Workforce wellbeing,2026-01-09,16.8,83,true,false,true,Continued drift
+P-005,Workforce wellbeing,2026-01-10,17.0,82,true,false,true,Review trend
